@@ -1,0 +1,23 @@
+<?php
+$lang = [
+    'name' => 'Español',
+    'dir' => 'ltr',
+    'title' => 'Calendario Hijri Unificado Global',
+    'prev_year' => 'H',
+    'next_year' => 'H',
+    'api_json' => 'API JSON',
+    'days' => ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'],
+    'no_data' => 'No se encontraron datos para el año',
+    'footer' => 'Datos extraídos de khgt.muhammadiyah.or.id',
+    'docs_title' => 'Documentación de la API',
+    'docs_desc' => 'Esta API proporciona datos del calendario Hijri extraídos del sitio web KHGT de Muhammadiyah.',
+    'endpoint' => 'Punto final',
+    'params' => 'Parámetros',
+    'param_year' => 'Año Hijri (opcional). Ej: 1448. Si no se proporciona, se calcula a partir de la fecha o por defecto al actual.',
+    'param_date' => 'Fecha gregoriana (YYYY-MM-DD). Ej: 2026-02-18. Si se proporciona sin año, el año Hijri se calcula automáticamente.',
+    'usage_example' => 'Ejemplo de uso',
+    'response_example' => 'Ejemplo de respuesta',
+    'notes' => 'Notas',
+    'note_1' => 'Los datos se extraen en tiempo real. El rendimiento depende del sitio web de origen.',
+    'select_lang' => 'Seleccionar idioma',
+];

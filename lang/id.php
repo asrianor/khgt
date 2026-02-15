@@ -1,0 +1,23 @@
+<?php
+$lang = [
+    'name' => 'Bahasa Indonesia',
+    'dir' => 'ltr',
+    'title' => 'Kalender Hijriah Global Tunggal',
+    'prev_year' => 'H', 
+    'next_year' => 'H',
+    'api_json' => 'API JSON',
+    'days' => ['Ahad', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'],
+    'no_data' => 'Data tidak ditemukan untuk tahun',
+    'footer' => 'Data diambil dari khgt.muhammadiyah.or.id',
+    'docs_title' => 'Dokumentasi API',
+    'docs_desc' => 'API ini menyediakan data kalender Hijriah yang diambil dari situs web KHGT Muhammadiyah.',
+    'endpoint' => 'Endpoint',
+    'params' => 'Parameter',
+    'param_year' => 'Tahun Hijriah (opsional). Contoh: 1448. Jika tidak diisi, akan dihitung dari tanggal atau default ke tahun saat ini.',
+    'param_date' => 'Tanggal Masehi (YYYY-MM-DD). Contoh: 2026-02-18. Jika diisi tanpa tahun, tahun Hijriah akan dihitung otomatis.',
+    'usage_example' => 'Contoh Penggunaan',
+    'response_example' => 'Contoh Respons',
+    'notes' => 'Catatan',
+    'note_1' => 'Data diambil secara real-time. Performa tergantung pada situs sumber.',
+    'select_lang' => 'Pilih Bahasa',
+];

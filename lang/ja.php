@@ -1,0 +1,23 @@
+<?php
+$lang = [
+    'name' => '日本語 (Japanese)',
+    'dir' => 'ltr',
+    'title' => '世界統一ヒジュラ暦',
+    'prev_year' => 'H',
+    'next_year' => 'H',
+    'api_json' => 'API JSON',
+    'days' => ['日曜日', '月曜日', '火曜日', '水曜日', '木曜日', '金曜日', '土曜日'],
+    'no_data' => '年のデータが見つかりません',
+    'footer' => 'データは khgt.muhammadiyah.or.id からスクレイピングされました',
+    'docs_title' => 'APIドキュメント',
+    'docs_desc' => 'このAPIは、Muhammadiyah KHGTウェブサイトからスクレイピングされたヒジュラ暦データを提供します。',
+    'endpoint' => 'エンドポイント',
+    'params' => 'パラメータ',
+    'param_year' => 'ヒジュラ年（オプション）。例：1448。指定されていない場合、日付から計算されるか、現在がデフォルトになります。',
+    'param_date' => 'グレゴリオ暦の日付（YYYY-MM-DD）。例：2026-02-18。年なしで指定された場合、ヒジュラ年は自動的に計算されます。',
+    'usage_example' => '使用例',
+    'response_example' => '応答例',
+    'notes' => '注意',
+    'note_1' => 'データはリアルタイムでスクレイピングされます。パフォーマンスはソースウェブサイトに依存します。',
+    'select_lang' => '言語を選択',
+];
