@@ -13,7 +13,9 @@ This project provides a PHP-based API that scrapes Hijri calendar data from the 
 3. Access the API at `http://localhost/khgt/api.php`.
 
 ## Usage
-- **API Endpoint:** `GET /api.php?year=1448`
+- **API Endpoint:** 
+  - `GET /api.php?year=1448`
+  - `GET /api.php?date=2026-02-18`
 - **Documentation:** `http://localhost/khgt/index.php`
 
 ## Deployment to GitHub

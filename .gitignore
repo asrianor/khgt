@@ -3,3 +3,8 @@ vendor/
 .DS_Store
 test_scraper.php
 *.log
+
+# Large binary files
+*.zip
+*.pdf
+*.exe

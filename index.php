@@ -22,12 +22,13 @@
 
     <h3>Parameters</h3>
     <ul>
-        <li><code>year</code> (optional): The Hijri year to fetch (e.g., <code>1448</code>). Defaults to current or 1448.</li>
+        <li><code>year</code> (optional): The Hijri year to fetch (e.g., <code>1448</code>). If not provided, it is calculated from the <code>date</code> parameter or defaults to the current Hijri year.</li>
+        <li><code>date</code> (optional): A Gregorian date (YYYY-MM-DD or D M) to filter by. Example: <code>2026-02-18</code>. If provided without a year, the Hijri year is automatically calculated.</li>
     </ul>
 
     <h3>Example Usage</h3>
-    <pre><code>GET /khgt/api.php?year=1448</code></pre>
-
+    <pre><code>GET /khgt/api.php?year=1448
+GET /khgt/api.php?date=2026-02-18</code></pre>
     <h3>Example Response</h3>
     <pre><code>{
     "status": "success",
