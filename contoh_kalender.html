@@ -304,13 +304,18 @@
                 const todayMonthId = idMonths[todayDate.getMonth()];
                 const todayMonthEn = engMonths[todayDate.getMonth()];
 
-                // Coba cocokkan format '21 Feb', '01 Feb', '1 Feb' dll.
-                const patterns = [
-                    `${todayDay} ${todayMonthId}`,
-                    `${todayDay < 10 ? '0' + todayDay : todayDay} ${todayMonthId}`,
-                    `${todayDay} ${todayMonthEn}`,
-                    `${todayDay < 10 ? '0' + todayDay : todayDay} ${todayMonthEn}`
-                ];
+                // Coba cocokkan string bebas spasi, misal '21 Feb' atau '21Feb'
+                const todayPattern1 = `${todayDay} ${todayMonthId}`;
+                const todayPattern2 = `${todayDay < 10 ? '0' + todayDay : todayDay} ${todayMonthId}`;
+                const todayPattern3 = `${todayDay} ${todayMonthEn}`;
+                const todayPattern4 = `${todayDay < 10 ? '0' + todayDay : todayDay} ${todayMonthEn}`;
+
+                function isDateMatch(gregText) {
+                    if (!gregText) return false;
+                    const txt = String(gregText).trim();
+                    return txt.includes(todayPattern1) || txt.includes(todayPattern2) ||
+                        txt.includes(todayPattern3) || txt.includes(todayPattern4);
+                }
 
                 if (forceMonthIndex !== null) {
                     currentMonthIndex = parseInt(forceMonthIndex);
@@ -322,10 +327,7 @@
                         // Cari otomatis bulan yang memuat hari ini
                         currentMonthIndex = 0; // default Muharram
                         let foundIdx = activeData.findIndex(m =>
-                            m.days.some(day => {
-                                // gregorian text biasanya "21 Feb 2026"
-                                return patterns.some(pattern => day.gregorian.startsWith(pattern));
-                            })
+                            m.days.some(day => isDateMatch(day.gregorian))
                         );
 
                         // Fallback: Jika tanggal spesifik (misal 21 Feb) tidak ada di database,
@@ -395,7 +397,7 @@
                 // Looping tanggal
                 monthData.days.forEach((day, index) => {
                     const isHoliday = day.holiday ? true : false;
-                    const isToday = patterns.some(pattern => day.gregorian.startsWith(pattern)) ? 'is-today' : '';
+                    const isToday = isDateMatch(day.gregorian) ? 'is-today' : '';
 
                     const dayOfWeek = (startPadding + index) % 7;
                     let hijriColor = '#455a64';
