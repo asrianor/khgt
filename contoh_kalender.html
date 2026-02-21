@@ -228,14 +228,13 @@
         // Fungsi dasar konversi Gregorian ke Hijri (perkiraan) untuk initial load
         function getApproximateHijriYear() {
             const today = new Date();
-            const gregorianYear = today.getFullYear();
-            let hijriYear = Math.round((gregorianYear - 622) * (33 / 32));
-            if (gregorianYear === 2026 && today.getMonth() === 1 && today.getDate() >= 18) {
-                hijriYear = 1448; // Ramadan 1448 starts Feb 18 2026
-            } else if (gregorianYear === 2026 && today.getMonth() > 1) {
-                hijriYear = 1448;
-            } else if (gregorianYear === 2027 && (today.getMonth() > 0 || (today.getMonth() === 0 && today.getDate() > 20))) {
-                hijriYear = 1449;
+            const y = today.getFullYear();
+            const m = today.getMonth() + 1; // 1-12
+            const d = today.getDate();
+
+            let hijriYear = Math.floor((y - 622) * (33 / 32));
+            if (m > 6 || (m === 6 && d >= 16)) {
+                hijriYear += 1;
             }
             return hijriYear;
         }
@@ -416,7 +415,8 @@
                 // Looping tanggal
                 monthData.days.forEach((day, index) => {
                     const isHoliday = day.holiday ? true : false;
-                    const isToday = (currentTargetYear === getApproximateHijriYear() && isDateMatch(day.gregorian)) ? 'is-today' : '';
+                    // Pastikan hari ini hanya ditandai jika berada di tahun Masehi yang benar (sesuai periode)
+                    const isToday = (monthData.period.includes(todayDate.getFullYear().toString()) && isDateMatch(day.gregorian)) ? 'is-today' : '';
 
                     const dayOfWeek = (startPadding + index) % 7;
                     let hijriColor = '#455a64';

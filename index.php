@@ -16,15 +16,10 @@ function getApproximateHijriYearPHP() {
     $m = (int)date('n'); // 1-12
     $d = (int)date('j');
     
-    $hijriYear = (int)round(($y - 622) * (33 / 32));
+    $hijriYear = (int)floor(($y - 622) * (33 / 32));
     
-    // Boundary patch for late Feb 2026 into 1448
-    if ($y === 2026 && $m === 2 && $d >= 18) {
-        $hijriYear = 1448;
-    } elseif ($y === 2026 && $m > 2) {
-        $hijriYear = 1448;
-    } elseif ($y === 2027 && ($m > 1 || ($m === 1 && $d > 20))) {
-        $hijriYear = 1449;
+    if ($m > 6 || ($m === 6 && $d >= 16)) {
+        $hijriYear += 1;
     }
     
     return $hijriYear;
@@ -416,7 +411,9 @@ function getStartDayOfWeek($gregorianDateStr, $monthPeriod) {
                                     $todayPattern4 = str_pad($todayDay, 2, '0', STR_PAD_LEFT) . ' ' . $todayMonthEn;
                                     
                                     $dstr = trim($day['gregorian']);
-                                    $isToday = ($year === getApproximateHijriYearPHP()) && (strpos($dstr, $todayPattern1) !== false || 
+                                    // Pastikan kita berada di tahun Masehi yang tepat untuk menghindari penandaan hari di tahun Hijriah lain
+                                    $isCurrentGregYear = (strpos($month['period'], (string)date('Y')) !== false);
+                                    $isToday = $isCurrentGregYear && (strpos($dstr, $todayPattern1) !== false || 
                                                 strpos($dstr, $todayPattern2) !== false || 
                                                 strpos($dstr, $todayPattern3) !== false || 
                                                 strpos($dstr, $todayPattern4) !== false);
