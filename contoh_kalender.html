@@ -265,32 +265,38 @@
             try {
                 const todayDate = new Date();
                 let params = new URLSearchParams(window.location.search);
-                let targetYear = forceYear || params.get('year');
+                let urlYear = params.get('year');
 
-                if (!targetYear) {
-                    targetYear = todayDate.getFullYear() - 579;
-                    if (todayDate.getMonth() >= 6) {
-                        targetYear += 1;
-                    }
+                // Tentukan Tahun
+                if (forceYear !== null) {
+                    currentTargetYear = parseInt(forceYear);
+                } else if (urlYear !== null) {
+                    currentTargetYear = parseInt(urlYear);
+                } else {
+                    currentTargetYear = getApproximateHijriYear(); // auto detect year
                 }
-                targetYear = parseInt(targetYear);
+
+                // Cek batas tahun
+                if (currentTargetYear < 1447) currentTargetYear = 1447;
+                if (currentTargetYear > 1492) currentTargetYear = 1492;
 
                 // --- Batasan Tahun ---
-                if (targetYear < 1447 || targetYear > 1492) {
-                    container.innerHTML = `<div class="cal-message">Tidak ada data untuk tahun ${targetYear}. Data tersedia untuk tahun 1447 hingga 1492.</div>`;
+                if (currentTargetYear < 1447 || currentTargetYear > 1492) {
+                    container.innerHTML = `<div class="cal-message">Tidak ada data untuk tahun ${currentTargetYear}. Data tersedia untuk tahun 1447 hingga 1492.</div>`;
                     return;
                 }
 
-                // Cek apakah perlu ambil data API baru (jika tahun beda)
-                if (currentTargetYear !== targetYear || !activeData) {
-                    const apiUrl = `/khgt/api.php?year=${targetYear}`;
+                // Cek apakah data untuk tahun yang diminta sudah diload
+                if (!activeData || document.lastLoadedYear !== currentTargetYear) {
+                    const apiUrl = `http://localhost/khgt/api.php?year=${currentTargetYear}`;
                     const response = await fetch(apiUrl);
                     const result = await response.json();
 
-                    if (result.status === 'success' && result.data.length > 0) {
+                    if (result.status === 'success' && result.data) {
                         activeData = result.data;
+                        document.lastLoadedYear = currentTargetYear;
                     } else {
-                        container.innerHTML = `<div class="cal-message">Data kalender tidak ditemukan untuk tahun ${targetYear}.</div>`;
+                        container.innerHTML = '<div class="cal-message">Gagal memuat data kalender Hijriah.</div>';
                         return;
                     }
                 }
