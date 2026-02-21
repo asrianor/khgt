@@ -321,12 +321,21 @@
                     } else {
                         // Cari otomatis bulan yang memuat hari ini
                         currentMonthIndex = 0; // default Muharram
-                        const foundIdx = activeData.findIndex(m =>
+                        let foundIdx = activeData.findIndex(m =>
                             m.days.some(day => {
                                 // gregorian text biasanya "21 Feb 2026"
                                 return patterns.some(pattern => day.gregorian.startsWith(pattern));
                             })
                         );
+
+                        // Fallback: Jika tanggal spesifik (misal 21 Feb) tidak ada di database,
+                        // cari bulan yang setidaknya memuat bulan Masehi tersebut (misal " Feb").
+                        if (foundIdx === -1) {
+                            foundIdx = activeData.findIndex(m =>
+                                m.days.some(day => day.gregorian.includes(' ' + todayMonthId) || day.gregorian.includes(' ' + todayMonthEn))
+                            );
+                        }
+
                         if (foundIdx !== -1) {
                             currentMonthIndex = foundIdx;
                         }
