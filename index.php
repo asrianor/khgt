@@ -64,16 +64,60 @@ function getStartDayOfWeek($gregorianDateStr, $monthPeriod) {
             --holiday-color: #ef5350;
             --border-radius: 12px;
         }
+        .top-navbar {
+            background-color: var(--primary-color);
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: white;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        .top-navbar .brand {
+            font-size: 20px;
+            font-weight: bold;
+            color: white;
+            text-decoration: none;
+        }
+        .top-navbar .nav-links {
+            display: flex;
+            gap: 20px;
+        }
+        .top-navbar .nav-links a {
+            color: rgba(255,255,255,0.8);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.2s;
+            font-size: 15px;
+        }
+        .top-navbar .nav-links a:hover {
+            color: white;
+        }
+        @media (max-width: 768px) {
+            .top-navbar {
+                flex-direction: column;
+                gap: 15px;
+                padding: 15px;
+            }
+            .top-navbar .nav-links {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+        }
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background-color: #f4f6f9;
             color: var(--text-color);
             margin: 0;
-            padding: 20px;
+            padding: 0;
         }
         .container {
             max-width: 1200px;
             margin: 0 auto;
+            padding: 20px;
         }
         .header {
             text-align: center;
@@ -319,7 +363,22 @@ function getStartDayOfWeek($gregorianDateStr, $monthPeriod) {
 </head>
 <body>
 
-<div class="container">
+<?php 
+$protocol = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http";
+$widgetUrl = $protocol . "://" . $_SERVER['HTTP_HOST'] . dirname($_SERVER['REQUEST_URI']) . "/contoh_kalender.html"; 
+?>
+
+<nav class="top-navbar">
+    <a href="index.php" class="brand">KHGT Web</a>
+    <div class="nav-links">
+        <a href="#kalender">Kalender</a>
+        <a href="#api-docs">API</a>
+        <a href="#blogger">Blogger Widget</a>
+        <a href="#wordpress">Wordpress Widget</a>
+    </div>
+</nav>
+
+<div class="container" id="kalender">
     <div class="header">
         <div class="lang-switcher">
             <select onchange="window.location.href='?year=<?php echo $year; ?>&lang='+this.value">
@@ -461,7 +520,7 @@ function getStartDayOfWeek($gregorianDateStr, $monthPeriod) {
     <?php endif; ?>
     
     <!-- API Documentation Section -->
-    <div class="docs-section">
+    <div class="docs-section" id="api-docs">
         <h2><?php echo $t['docs_title']; ?></h2>
         <p><?php echo $t['docs_desc']; ?></p>
 
@@ -499,7 +558,21 @@ GET /khgt/api.php?date=2026-02-18</code></pre>
         </ul>
     </div>
     
-    <footer style="text-align: center; margin-top: 50px; color: #888; font-size: 0.9em;">
+    <!-- Blogger Widget Section -->
+    <div class="docs-section" id="blogger">
+        <h2>Blogger Widget</h2>
+        <p>Pasang kalender Hijriah KHGT di blog Blogger Anda dengan menyalin kode di bawah ini ke dalam widget HTML/JavaScript.</p>
+        <pre><code style="color: #4CAF50;">&lt;iframe src="<?php echo htmlspecialchars($widgetUrl); ?>" width="100%" height="750" style="border:none; border-radius:12px; overflow:hidden; background: #fff;" scrolling="no"&gt;&lt;/iframe&gt;</code></pre>
+    </div>
+
+    <!-- Wordpress Widget Section -->
+    <div class="docs-section" id="wordpress">
+        <h2>Wordpress Widget</h2>
+        <p>Tambahkan kalender ke situs Wordpress Anda dengan menggunakan blok "Custom HTML" atau widget Text/HTML dan masukkan kode berikut.</p>
+        <pre><code style="color: #4CAF50;">&lt;iframe src="<?php echo htmlspecialchars($widgetUrl); ?>" width="100%" height="750" style="border:none; border-radius:12px; overflow:hidden; background: #fff;" scrolling="no"&gt;&lt;/iframe&gt;</code></pre>
+    </div>
+    
+    <footer style="text-align: center; margin-top: 50px; color: #888; font-size: 0.9em; padding-bottom: 20px;">
         <p><?php echo $t['footer']; ?></p>
     </footer>
 </div>
