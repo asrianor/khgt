@@ -10,11 +10,27 @@ if (!array_key_exists($lang, $translations)) $lang = 'id';
 $t = $translations[$lang];
 $dir = isset($t['dir']) ? $t['dir'] : 'ltr';
 
-// Determine Year
-$year = isset($_GET['year']) ? intval($_GET['year']) : (int)date('Y') - 579;
-if (!isset($_GET['year']) && (int)date('n') >= 7) {
-    $year++;
+// Determine Year dynamically based on today's Gregorian Date
+function getApproximateHijriYearPHP() {
+    $y = (int)date('Y');
+    $m = (int)date('n'); // 1-12
+    $d = (int)date('j');
+    
+    $hijriYear = round(($y - 622) * (33 / 32));
+    
+    // Boundary patch for late Feb 2026 into 1448
+    if ($y === 2026 && $m === 2 && $d >= 18) {
+        $hijriYear = 1448;
+    } elseif ($y === 2026 && $m > 2) {
+        $hijriYear = 1448;
+    } elseif ($y === 2027 && ($m > 1 || ($m === 1 && $d > 20))) {
+        $hijriYear = 1449;
+    }
+    
+    return $hijriYear;
 }
+
+$year = isset($_GET['year']) ? intval($_GET['year']) : getApproximateHijriYearPHP();
 
 // Fetch Data
 $scraper = new HijriScraper();
