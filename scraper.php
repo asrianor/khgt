@@ -58,9 +58,14 @@ class HijriScraper {
             $dayNodes = $xpath->query('.//div[contains(@class, "row-cols-7")]/div[contains(@class, "py-1")]', $monthDiv);
 
             foreach ($dayNodes as $dayNode) {
-                $dateBox = $xpath->query('.//div[contains(@class, "bg-white")]', $dayNode)->item(0);
+                $dateBox = $xpath->query('./div[contains(@class, "bg-white") or contains(@class, "this-calendar-today") or contains(@style, "border")]', $dayNode)->item(0);
                 
-                if ($dateBox) {
+                if (!$dateBox) {
+                    // Try to fallback to any div that has the Gregorian date inside it
+                    $dateBox = $xpath->query('./div', $dayNode)->item(0);
+                }
+                
+                if ($dateBox && trim($dateBox->textContent) !== '') {
                     $dayInfo = [];
                     
                     // Gregorian Date
@@ -85,7 +90,9 @@ class HijriScraper {
                     $holidayDot = $xpath->query('.//div[@title]', $dateBox)->item(0);
                     $dayInfo['holiday'] = $holidayDot ? $holidayDot->getAttribute('title') : null;
 
-                    $days[] = $dayInfo;
+                    if (!empty($dayInfo['gregorian']) || !empty($dayInfo['hijri'])) {
+                        $days[] = $dayInfo;
+                    }
                 }
             }
             $monthData['days'] = $days;

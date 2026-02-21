@@ -16,7 +16,7 @@ function getApproximateHijriYearPHP() {
     $m = (int)date('n'); // 1-12
     $d = (int)date('j');
     
-    $hijriYear = round(($y - 622) * (33 / 32));
+    $hijriYear = (int)round(($y - 622) * (33 / 32));
     
     // Boundary patch for late Feb 2026 into 1448
     if ($y === 2026 && $m === 2 && $d >= 18) {
@@ -416,7 +416,7 @@ function getStartDayOfWeek($gregorianDateStr, $monthPeriod) {
                                     $todayPattern4 = str_pad($todayDay, 2, '0', STR_PAD_LEFT) . ' ' . $todayMonthEn;
                                     
                                     $dstr = trim($day['gregorian']);
-                                    $isToday = (strpos($dstr, $todayPattern1) !== false || 
+                                    $isToday = ($year === getApproximateHijriYearPHP()) && (strpos($dstr, $todayPattern1) !== false || 
                                                 strpos($dstr, $todayPattern2) !== false || 
                                                 strpos($dstr, $todayPattern3) !== false || 
                                                 strpos($dstr, $todayPattern4) !== false);

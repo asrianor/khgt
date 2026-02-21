@@ -374,9 +374,9 @@
                 yearDisplay.textContent = monthData.month; // Tampilkan nama bulan + tahun di nav (contoh: Muharam 1447 H)
 
                 // Disable tombol mundur jika sudah di Muharram 1447
-                btnPrev.disabled = (targetYear <= 1447 && currentMonthIndex <= 0);
+                btnPrev.disabled = (currentTargetYear <= 1447 && currentMonthIndex <= 0);
                 // Disable tombol maju jika sudah di Dzulhijjah 1492
-                btnNext.disabled = (targetYear >= 1492 && currentMonthIndex >= 11);
+                btnNext.disabled = (currentTargetYear >= 1492 && currentMonthIndex >= 11);
 
                 // --- Susun HTML ---
                 let eventsHtml = '';
@@ -416,7 +416,7 @@
                 // Looping tanggal
                 monthData.days.forEach((day, index) => {
                     const isHoliday = day.holiday ? true : false;
-                    const isToday = isDateMatch(day.gregorian) ? 'is-today' : '';
+                    const isToday = (currentTargetYear === getApproximateHijriYear() && isDateMatch(day.gregorian)) ? 'is-today' : '';
 
                     const dayOfWeek = (startPadding + index) % 7;
                     let hijriColor = '#455a64';
