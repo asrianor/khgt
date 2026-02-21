@@ -389,6 +389,25 @@ function getStartDayOfWeek($gregorianDateStr, $monthPeriod) {
                                 foreach ($month['days'] as $index => $day): 
                                     $isHoliday = !empty($day['holiday']);
                                     
+                                    // Highlight today's date based on server date matches
+                                    // $day['gregorian'] e.g "21 Feb 2026" or "21 Feb"
+                                    $todayDay = date('j');
+                                    $todayMonthId = array('Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agt', 'Sep', 'Okt', 'Nov', 'Des')[date('n') - 1];
+                                    $todayMonthEn = date('M');
+                                    $todayPattern1 = $todayDay . ' ' . $todayMonthId;
+                                    $todayPattern2 = str_pad($todayDay, 2, '0', STR_PAD_LEFT) . ' ' . $todayMonthId;
+                                    $todayPattern3 = $todayDay . ' ' . $todayMonthEn;
+                                    $todayPattern4 = str_pad($todayDay, 2, '0', STR_PAD_LEFT) . ' ' . $todayMonthEn;
+                                    
+                                    $dstr = trim($day['gregorian']);
+                                    $isToday = (strpos($dstr, $todayPattern1) !== false || 
+                                                strpos($dstr, $todayPattern2) !== false || 
+                                                strpos($dstr, $todayPattern3) !== false || 
+                                                strpos($dstr, $todayPattern4) !== false);
+                                                
+                                    $cellClasses = 'cal-cell';
+                                    if ($isToday) $cellClasses .= ' is-today';
+
                                     // Deteksi hari (0 = Ahad, 5 = Jumat)
                                     $dayOfWeek = ($pad + $index) % 7;
                                     $hijriColor = '#455a64';
@@ -403,7 +422,7 @@ function getStartDayOfWeek($gregorianDateStr, $monthPeriod) {
                                     if (!empty($day['pasaran'])) $titleAttr[] = 'Pasaran: ' . $day['pasaran'];
                                     $titleStr = !empty($titleAttr) ? htmlspecialchars(implode(' | ', $titleAttr)) : '';
                                 ?>
-                                    <div class="cal-cell" title="<?php echo $titleStr; ?>">
+                                    <div class="<?php echo $cellClasses; ?>" title="<?php echo $titleStr; ?>">
                                         <div class="cal-greg"><?php echo htmlspecialchars($gregText); ?></div>
                                         <div class="cal-hijri" style="color: <?php echo $hijriColor; ?>;"><?php echo $day['hijri']; ?></div>
                                         <div class="cal-pasaran"><?php echo htmlspecialchars($day['pasaran']); ?></div>

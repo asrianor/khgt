@@ -225,6 +225,21 @@
         let currentMonthIndex = null;
         let activeData = null; // Store fetched data so we don't refetch on every month change
 
+        // Fungsi dasar konversi Gregorian ke Hijri (perkiraan) untuk initial load
+        function getApproximateHijriYear() {
+            const today = new Date();
+            const gregorianYear = today.getFullYear();
+            let hijriYear = Math.round((gregorianYear - 622) * (33 / 32));
+            if (gregorianYear === 2026 && today.getMonth() === 1 && today.getDate() >= 18) {
+                hijriYear = 1448; // Ramadan 1448 starts Feb 18 2026
+            } else if (gregorianYear === 2026 && today.getMonth() > 1) {
+                hijriYear = 1448;
+            } else if (gregorianYear === 2027 && (today.getMonth() > 0 || (today.getMonth() === 0 && today.getDate() > 20))) {
+                hijriYear = 1449;
+            }
+            return hijriYear;
+        }
+
         async function changeMonth(offset) {
             if (!currentTargetYear || currentMonthIndex === null) return;
 
