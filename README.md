@@ -1,5 +1,7 @@
 # KHGT (Kalender Hijriah Global Tunggal) API Muhammadiyah
 
+> **⚠️ DISCLAIMER (PENTING)**: Proyek ini **BUKAN** merupakan dokumentasi resmi, produk resmi, atau API resmi yang dirilis oleh organisasi Muhammadiyah. Proyek ini dibangun secara independen oleh pihak ketiga sebagai *tools* (alat bantu) untuk memudahkan *developer* mengambil data dari sumber publik, dan **TIDAK** memiliki hubungan afiliasi langsung maupun mandat resmi dari Pimpinan Pusat Muhammadiyah.
+
 Layanan API berbasis PHP untuk mendapatkan data **Kalender Hijriah Global Tunggal (KHGT) Muhammadiyah**. Proyek ini berfungsi sebagai scraper yang menyediakan penanggalan akurat (Masehi, Hijriah, dan Pasaran Jawa) dalam format JSON yang siap digunakan oleh developer web dan mobile.
 
 ## 🚀 Fitur Utama
