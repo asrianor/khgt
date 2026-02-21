@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Widget Kalender Hijriah</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f6f9;
+            margin: 0;
+            padding: 20px;
+            color: #333;
+        }
+
+        .calendar-container {
+            max-width: 1100px;
+            margin: 0 auto;
+            background: #fdfdfd;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            padding: 30px;
+            border: 1px solid #eaeaea;
+        }
+
+        .cal-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .cal-nav button {
+            background: white;
+            border: 1px solid #ccc;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            color: #3b5998;
+            transition: all 0.2s;
+        }
+
+        .cal-nav button:hover:not(:disabled) {
+            background: #f0f0f0;
+        }
+
+        .cal-nav button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .layout-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 30px;
+        }
+
+        .cal-header h2 {
+            margin: 0 0 5px 0;
+            font-size: 28px;
+            color: #2c3e50;
+        }
+
+        .cal-header p {
+            margin: 0 0 20px 0;
+            color: #888;
+            font-size: 16px;
+        }
+
+        .cal-days-header {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .cal-days-header div {
+            background: #3b5998;
+            color: white;
+            text-align: center;
+            padding: 8px 0;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .cal-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 10px;
+        }
+
+        .cal-cell {
+            background: white;
+            border: 1px solid #f0f0f0;
+            border-radius: 8px;
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            min-height: 90px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+            transition: transform 0.2s;
+        }
+
+        .cal-cell:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+
+        .cal-cell.is-today {
+            border: 2px solid #3498db;
+            background: #f0f8ff;
+        }
+
+        .cal-empty {
+            background: repeating-linear-gradient(-45deg,
+                    #ffffff,
+                    #ffffff 10px,
+                    #f8f8f8 10px,
+                    #f8f8f8 20px);
+            border: 1px solid #eee;
+            box-shadow: none;
+        }
+
+        .cal-empty:hover {
+            transform: none;
+            box-shadow: none;
+        }
+
+        .cal-greg {
+            font-size: 11px;
+            color: #999;
+        }
+
+        .cal-hijri {
+            font-size: 28px;
+            font-weight: bold;
+            text-align: center;
+            margin: auto 0;
+            line-height: 1;
+        }
+
+        .cal-pasaran {
+            font-size: 11px;
+            color: #aaa;
+            text-align: center;
+            margin-bottom: 3px;
+        }
+
+        .cal-dot {
+            width: 5px;
+            height: 5px;
+            background: #3498db;
+            border-radius: 50%;
+            margin: 0 auto;
+        }
+
+        .events-col h3 {
+            margin: 0 0 15px 0;
+            font-size: 18px;
+            color: #2c3e50;
+        }
+
+        .events-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .event-card {
+            background: white;
+            border: 1px solid #eee;
+            border-left: 4px solid #3498db;
+            border-radius: 6px;
+            padding: 12px 15px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+        }
+
+        .event-date {
+            font-size: 13px;
+            font-weight: 700;
+            color: #555;
+            margin-bottom: 4px;
+        }
+
+        .event-name {
+            font-size: 12px;
+            color: #888;
+        }
+
+        .cal-message {
+            text-align: center;
+            padding: 40px;
+            color: #7f8c8d;
+            font-size: 16px;
+        }
+
+        @media (max-width: 768px) {
+            .layout-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="calendar-container">
+        <!-- Modul Navigasi -->
+        <div class="cal-nav">
+            <button id="btnPrev" onclick="changeMonth(-1)">&laquo; Bulan Sebelumnya</button>
+            <span id="currentYearDisplay" style="font-weight: bold; font-size: 18px; color: #3b5998;">...</span>
+            <button id="btnNext" onclick="changeMonth(1)">Bulan Selanjutnya &raquo;</button>
+        </div>
+
+        <div id="hijri-calendar">
+            <div class="cal-message">Memuat kalender...</div>
+        </div>
+    </div>
+
+    <script>
+        let currentTargetYear = null;
+        let currentMonthIndex = null;
+        let activeData = null; // Store fetched data so we don't refetch on every month change
+
+        async function changeMonth(offset) {
+            if (!currentTargetYear || currentMonthIndex === null) return;
+
+            let newMonthIndex = currentMonthIndex + offset;
+            let newYear = currentTargetYear;
+
+            // Transisi ke tahun sebelumnya jika mundur dari Muharram (index 0)
+            if (newMonthIndex < 0) {
+                newYear -= 1;
+                newMonthIndex = 11; // Dzulhijjah
+            }
+            // Transisi ke tahun berikutnya jika maju dari Dzulhijjah (index 11)
+            else if (newMonthIndex > 11) {
+                newYear += 1;
+                newMonthIndex = 0; // Muharram
+            }
+
+            // Validasi batasan tahun
+            if (newYear >= 1447 && newYear <= 1492) {
+                // Update URL Parameter
+                const url = new URL(window.location);
+                url.searchParams.set('year', newYear);
+                url.searchParams.set('month', newMonthIndex);
+                window.history.pushState({}, '', url);
+
+                await loadCalendar(newYear, newMonthIndex);
+            }
+        }
+
+        async function loadCalendar(forceYear = null, forceMonthIndex = null) {
+            const container = document.getElementById('hijri-calendar');
+            const btnPrev = document.getElementById('btnPrev');
+            const btnNext = document.getElementById('btnNext');
+            const yearDisplay = document.getElementById('currentYearDisplay');
+
+            container.innerHTML = `<div class="cal-message">Memuat kalender...</div>`;
+
+            try {
+                const todayDate = new Date();
+                let params = new URLSearchParams(window.location.search);
+                let targetYear = forceYear || params.get('year');
+
+                if (!targetYear) {
+                    targetYear = todayDate.getFullYear() - 579;
+                    if (todayDate.getMonth() >= 6) {
+                        targetYear += 1;
+                    }
+                }
+                targetYear = parseInt(targetYear);
+
+                // --- Batasan Tahun ---
+                if (targetYear < 1447 || targetYear > 1492) {
+                    container.innerHTML = `<div class="cal-message">Tidak ada data untuk tahun ${targetYear}. Data tersedia untuk tahun 1447 hingga 1492.</div>`;
+                    return;
+                }
+
+                // Cek apakah perlu ambil data API baru (jika tahun beda)
+                if (currentTargetYear !== targetYear || !activeData) {
+                    const apiUrl = `/khgt/api.php?year=${targetYear}`;
+                    const response = await fetch(apiUrl);
+                    const result = await response.json();
+
+                    if (result.status === 'success' && result.data.length > 0) {
+                        activeData = result.data;
+                    } else {
+                        container.innerHTML = `<div class="cal-message">Data kalender tidak ditemukan untuk tahun ${targetYear}.</div>`;
+                        return;
+                    }
+                }
+
+                currentTargetYear = targetYear;
+
+                // --- Penentuan Index Bulan ---
+                const idMonths = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agt', 'Sep', 'Okt', 'Nov', 'Des'];
+                const todayDay = todayDate.getDate();
+                const todayStr1 = `${todayDay} ${idMonths[todayDate.getMonth()]}`;
+                const todayStr2 = `${todayDay < 10 ? '0' + todayDay : todayDay} ${idMonths[todayDate.getMonth()]}`;
+
+                if (forceMonthIndex !== null) {
+                    currentMonthIndex = parseInt(forceMonthIndex);
+                } else {
+                    let urlMonth = params.get('month');
+                    if (urlMonth !== null) {
+                        currentMonthIndex = parseInt(urlMonth);
+                    } else {
+                        // Cari otomatis bulan yang memuat hari ini
+                        currentMonthIndex = 0; // default Muharram
+                        const foundIdx = activeData.findIndex(m =>
+                            m.days.some(day =>
+                                day.gregorian === todayStr1 || day.gregorian.startsWith(todayStr1 + " ") ||
+                                day.gregorian === todayStr2 || day.gregorian.startsWith(todayStr2 + " ")
+                            )
+                        );
+                        if (foundIdx !== -1) {
+                            currentMonthIndex = foundIdx;
+                        }
+                    }
+                }
+
+                // Pastikan index bulan valid (0-11 fallback ke 0)
+                if (currentMonthIndex < 0 || currentMonthIndex >= activeData.length) {
+                    currentMonthIndex = 0;
+                }
+
+                let monthData = activeData[currentMonthIndex];
+
+                // --- Update Navigasi UI ---
+                yearDisplay.textContent = monthData.month; // Tampilkan nama bulan + tahun di nav (contoh: Muharam 1447 H)
+
+                // Disable tombol mundur jika sudah di Muharram 1447
+                btnPrev.disabled = (targetYear <= 1447 && currentMonthIndex <= 0);
+                // Disable tombol maju jika sudah di Dzulhijjah 1492
+                btnNext.disabled = (targetYear >= 1492 && currentMonthIndex >= 11);
+
+                // --- Susun HTML ---
+                let eventsHtml = '';
+
+                let html = `
+                    <div class="layout-grid">
+                        <div class="cal-main">
+                            <div class="cal-header">
+                                <h2>${monthData.month}</h2>
+                                <p>${monthData.period}</p>
+                            </div>
+                            <div class="cal-days-header">
+                                <div>Ahad</div><div>Senin</div><div>Selasa</div><div>Rabu</div><div>Kamis</div><div>Jumat</div><div>Sabtu</div>
+                            </div>
+                            <div class="cal-grid">
+                `;
+
+                // Hitung padding kosong di awal bulan
+                // Kita gunakan gregorian date + tahun berjalan saat ini untuk menghitung harinya
+                const firstDayGregorian = monthData.days[0].gregorian;
+
+                // Cari tahun Masehi dari teks periode bulan (Contoh: "Juni 2025 - Juli 2025" -> 2025)
+                const periodMatch = monthData.period.match(/\d{4}/);
+                const gregYearForDate = periodMatch ? periodMatch[0] : todayDate.getFullYear();
+
+                const firstDayEn = firstDayGregorian
+                    .replace('Mei', 'May').replace('Agt', 'Aug').replace('Okt', 'Oct').replace('Des', 'Dec')
+                    + ' ' + gregYearForDate;
+
+                const dateObj = new Date(firstDayEn);
+                const startPadding = isNaN(dateObj.getDay()) ? 0 : dateObj.getDay();
+
+                for (let i = 0; i < startPadding; i++) {
+                    html += `<div class="cal-cell cal-empty"></div>`;
+                }
+
+                // Looping tanggal
+                monthData.days.forEach((day, index) => {
+                    const isHoliday = day.holiday ? true : false;
+                    const isToday = (day.gregorian === todayStr1 || day.gregorian.startsWith(todayStr1 + " ") || day.gregorian === todayStr2 || day.gregorian.startsWith(todayStr2 + " ")) ? 'is-today' : '';
+
+                    const dayOfWeek = (startPadding + index) % 7;
+                    let hijriColor = '#455a64';
+                    if (dayOfWeek === 0) hijriColor = '#ef5350'; // Ahad
+                    if (dayOfWeek === 5) hijriColor = '#66bb6a'; // Jumat
+
+                    if (day.holiday) {
+                        eventsHtml += `
+                            <div class="event-card">
+                                <div class="event-date">${day.hijri_numeric} ${monthData.month.replace(/ \d+ H/, '')} / ${day.gregorian.split(' ')[0]} ${day.gregorian.split(' ')[1]} ${gregYearForDate}</div>
+                                <div class="event-name">${day.holiday}</div>
+                            </div>
+                        `;
+                    }
+
+                    let cellClasses = ['cal-cell'];
+                    if (isToday) cellClasses.push(isToday);
+
+                    let gregText = `${day.gregorian.split(' ')[0]} ${day.gregorian.split(' ')[1]}`;
+
+                    html += `
+                        <div class="${cellClasses.join(' ')}" title="${day.pasaran}">
+                            <div class="cal-greg">${gregText}</div>
+                            <div class="cal-hijri" style="color: ${hijriColor};">${day.hijri}</div>
+                            <div class="cal-pasaran">${day.pasaran}</div>
+                            ${isHoliday ? '<div class="cal-dot"></div>' : '<div style="height:5px"></div>'}
+                        </div>
+                    `;
+                });
+
+                html += `
+                            </div>
+                        </div>
+                        <div class="events-col">
+                            <h3>Hari Istimewa</h3>
+                            <div class="events-list">
+                                ${eventsHtml || '<p style="color:#999; font-size:13px;">Tidak ada hari istimewa bulan ini.</p>'}
+                            </div>
+                        </div>
+                    </div>
+                `;
+                container.innerHTML = html;
+
+            } catch (error) {
+                console.error('Error:', error);
+                container.innerHTML = `<div class="cal-message">Terjadi kesalahan saat memuat API.</div>`;
+            }
+        }
+
+        // Jalankan Script Awal
+        document.addEventListener('DOMContentLoaded', () => loadCalendar());
+    </script>
+</body>
+
+</html>

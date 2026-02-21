@@ -45,17 +45,17 @@ function getStartDayOfWeek($gregorianDateStr, $monthPeriod) {
     <title><?php echo $t['title']; ?> - <?php echo $year; ?> H</title>
     <style>
         :root {
-            --primary-color: #1a237e;
-            --secondary-color: #304ffe;
-            --accent-color: #ffca28;
-            --bg-color: #f5f7fa;
+            --primary-color: #3b5998;
+            --secondary-color: #2c3e50;
+            --accent-color: #3498db;
+            --bg-color: #f4f6f9;
             --text-color: #333;
-            --holiday-color: #e53935;
-            --border-radius: 8px;
+            --holiday-color: #ef5350;
+            --border-radius: 12px;
         }
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: var(--bg-color);
+            background-color: #f4f6f9;
             color: var(--text-color);
             margin: 0;
             padding: 20px;
@@ -66,7 +66,7 @@ function getStartDayOfWeek($gregorianDateStr, $monthPeriod) {
         }
         .header {
             text-align: center;
-            margin-bottom: 30px;
+            margin-bottom: 40px;
             position: relative;
         }
         .lang-switcher {
@@ -75,8 +75,9 @@ function getStartDayOfWeek($gregorianDateStr, $monthPeriod) {
             right: 0;
             background: white;
             padding: 5px;
-            border-radius: 4px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            border-radius: 6px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            border: 1px solid #eee;
         }
         html[dir="rtl"] .lang-switcher {
             right: auto;
@@ -84,9 +85,10 @@ function getStartDayOfWeek($gregorianDateStr, $monthPeriod) {
         }
         
         .header h1 {
-            color: var(--primary-color);
+            color: var(--secondary-color);
             margin-bottom: 10px;
             margin-top: 40px; 
+            font-size: 32px;
         }
         .nav-buttons {
             display: flex;
@@ -99,142 +101,207 @@ function getStartDayOfWeek($gregorianDateStr, $monthPeriod) {
             padding: 10px 20px;
             background-color: white;
             border: 1px solid #ddd;
-            border-radius: 20px;
+            border-radius: 8px;
             text-decoration: none;
             color: var(--primary-color);
-            font-weight: bold;
-            transition: all 0.3s ease;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            font-weight: 600;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
         }
         .btn:hover {
-            background-color: var(--primary-color);
-            color: white;
+            background-color: #f0f0f0;
             transform: translateY(-2px);
         }
         
         .calendar-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 40px;
         }
-        .month-card {
-            background: white;
+        
+        /* Modern Layout CSS */
+        .month-wrapper {
+            background: #fdfdfd;
             border-radius: var(--border-radius);
-            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            padding: 30px;
+            border: 1px solid #eaeaea;
         }
-        .month-header {
-            background-color: var(--primary-color);
+
+        .layout-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 30px;
+        }
+
+        .month-header h2 {
+            margin: 0 0 5px 0;
+            font-size: 28px;
+            color: var(--secondary-color);
+        }
+
+        .month-header p {
+            margin: 0 0 20px 0;
+            color: #888;
+            font-size: 16px;
+        }
+
+        .cal-days-header {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .cal-days-header div {
+            background: var(--primary-color);
             color: white;
-            padding: 15px;
             text-align: center;
+            padding: 8px 0;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 600;
         }
-        .month-title {
-            font-size: 1.25em;
-            font-weight: bold;
-            margin: 0;
-        }
-        .month-period {
-            font-size: 0.85em;
-            opacity: 0.9;
-            margin-top: 5px;
-        }
-        
-        .days-header {
+
+        .cal-grid {
             display: grid;
             grid-template-columns: repeat(7, 1fr);
-            background-color: #e8eaf6;
-            padding: 5px 0;
-            text-align: center;
-            font-weight: bold;
-            font-size: 0.8em;
-            color: #555;
-            border-bottom: 1px solid #eee;
+            gap: 10px;
         }
-        .days-grid {
-            display: grid;
-            grid-template-columns: repeat(7, 1fr);
-            padding: 10px;
-            gap: 5px;
-            flex-grow: 1;
-        }
-        
-        .day-cell {
+
+        .cal-cell {
+            background: white;
             border: 1px solid #f0f0f0;
-            border-radius: 4px;
-            min-height: 60px;
+            border-radius: 8px;
+            padding: 10px;
             display: flex;
             flex-direction: column;
-            justify-content: space-between;
-            padding: 5px;
-            background: #fff;
+            min-height: 90px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+            transition: transform 0.2s;
             position: relative;
         }
-        .day-cell.empty {
-            background: transparent;
-            border: none;
-        }
-        .day-cell.holiday {
-            background-color: #ffebee;
-            border-color: #ffcdd2;
-        }
         
-        .hijri-date {
-            font-size: 1.2em;
+        .cal-cell:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+
+        /* Today highlight handled in JS before, we can keep or adjust based on PHP */
+        .cal-cell.is-today {
+            border: 2px solid var(--accent-color);
+            background: #f0f8ff;
+        }
+
+        .cal-cell.empty {
+            background: repeating-linear-gradient(
+                -45deg,
+                #ffffff,
+                #ffffff 10px,
+                #f8f8f8 10px,
+                #f8f8f8 20px
+            );
+            border: 1px solid #eee;
+            box-shadow: none;
+        }
+        .cal-cell.empty:hover {
+            transform: none;
+            box-shadow: none;
+        }
+
+        .cal-greg {
+            font-size: 11px;
+            color: #999;
+        }
+
+        .cal-hijri {
+            font-size: 28px;
             font-weight: bold;
-            color: var(--primary-color);
-            align-self: flex-end; 
+            text-align: center;
+            margin: auto 0;
             line-height: 1;
         }
-        
-        .gregorian-date {
-            font-size: 0.7em;
-            color: #666;
-            margin-top: 2px;
+
+        .cal-pasaran {
+            font-size: 11px;
+            color: #aaa;
+            text-align: center;
+            margin-bottom: 3px;
         }
-        .pasaran {
-            font-size: 0.65em;
+
+        .cal-dot {
+            width: 5px;
+            height: 5px;
+            background: var(--accent-color);
+            border-radius: 50%;
+            margin: 0 auto;
+        }
+
+        .events-col h3 {
+            margin: 0 0 15px 0;
+            font-size: 18px;
+            color: var(--secondary-color);
+        }
+
+        .events-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .event-card {
+            background: white;
+            border: 1px solid #eee;
+            border-left: 4px solid var(--accent-color);
+            border-radius: 6px;
+            padding: 12px 15px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+        }
+
+        .event-date {
+            font-size: 13px;
+            font-weight: 700;
+            color: #555;
+            margin-bottom: 4px;
+        }
+
+        .event-name {
+            font-size: 12px;
             color: #888;
-            font-style: italic;
-        }
-        .holiday-badge {
-            font-size: 0.6em;
-            color: var(--holiday-color);
-            margin-top: auto;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
         }
         
         /* Docs Section */
         .docs-section {
             margin-top: 60px;
             background: white;
-            padding: 30px;
+            padding: 40px;
             border-radius: var(--border-radius);
-            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            border: 1px solid #eaeaea;
         }
         .docs-section h2 {
             border-bottom: 2px solid #eee;
             padding-bottom: 10px;
             margin-bottom: 20px;
-            color: var(--primary-color);
+            color: var(--secondary-color);
         }
-        pre { background: #f4f4f4; padding: 15px; border-radius: 5px; overflow-x: auto; direction: ltr; text-align: left; }
+        pre { background: #f4f4f4; padding: 15px; border-radius: 8px; overflow-x: auto; direction: ltr; text-align: left; }
         code { font-family: "Consolas", "Monaco", monospace; color: #d63384; }
-        .endpoint-box { background: #e9ecef; padding: 10px; border-radius: 5px; margin-bottom: 20px; direction: ltr; text-align: left; }
+        .endpoint-box { background: #e9ecef; padding: 10px; border-radius: 8px; margin-bottom: 20px; direction: ltr; text-align: left; font-size: 15px; }
         .method { font-weight: bold; color: #0d6efd; margin-right: 10px; }
 
-        @media (max-width: 768px) {
-            .calendar-grid {
+        @media (max-width: 900px) {
+            .layout-grid {
                 grid-template-columns: 1fr;
             }
+        }
+        @media (max-width: 768px) {
             .header h1 { font-size: 1.5em; }
+            .cal-days-header div { font-size: 11px; }
+            .cal-hijri { font-size: 20px; }
             .lang-switcher {
                 position: static;
-                margin-bottom: 10px;
+                margin-bottom: 15px;
             }
         }
     </style>
@@ -256,57 +323,105 @@ function getStartDayOfWeek($gregorianDateStr, $monthPeriod) {
         <h1><?php echo $t['title']; ?></h1>
         
         <div class="nav-buttons">
-            <a href="?year=<?php echo $year - 1; ?>&lang=<?php echo $lang; ?>" class="btn">&laquo; <?php echo $year - 1; ?> <?php echo $t['prev_year']; ?></a>
+            <?php 
+                $prevDisabled = ($year <= 1447) ? 'pointer-events: none; opacity: 0.5; background: #eee;' : '';
+                $nextDisabled = ($year >= 1492) ? 'pointer-events: none; opacity: 0.5; background: #eee;' : '';
+            ?>
+            <a href="?year=<?php echo $year - 1; ?>&lang=<?php echo $lang; ?>" class="btn" style="<?php echo $prevDisabled; ?>">&laquo; <?php echo $year - 1; ?> <?php echo $t['prev_year']; ?></a>
             <span style="font-size: 1.5em; font-weight: bold; padding: 5px 15px;"><?php echo $year; ?> <?php echo $t['next_year']; ?></span>
-            <a href="?year=<?php echo $year + 1; ?>&lang=<?php echo $lang; ?>" class="btn"><?php echo $year + 1; ?> <?php echo $t['next_year']; ?> &raquo;</a>
+            <a href="?year=<?php echo $year + 1; ?>&lang=<?php echo $lang; ?>" class="btn" style="<?php echo $nextDisabled; ?>"><?php echo $year + 1; ?> <?php echo $t['next_year']; ?> &raquo;</a>
             <a href="api.php?year=<?php echo $year; ?>" class="btn" target="_blank"><?php echo $t['api_json']; ?></a>
         </div>
     </div>
 
-    <?php if (empty($data)): ?>
+    <?php if ($year < 1447 || $year > 1492): ?>
+        <p style="text-align: center; color: #7f8c8d; font-size: 16px; margin: 40px;">Tidak ada data untuk tahun <?php echo $year; ?>. Data tersedia untuk tahun 1447 hingga 1492.</p>
+    <?php elseif (empty($data)): ?>
         <p style="text-align: center;"><?php echo $t['no_data']; ?> <?php echo $year; ?>.</p>
     <?php else: ?>
         <div class="calendar-grid">
             <?php foreach ($data as $month): 
                 if (!is_array($month)) continue;
+                
+                // Siapkan HTML untuk events/Hari Istimewa di bulan ini
+                $eventsHtml = '';
+                foreach ($month['days'] as $day) {
+                    if (!empty($day['holiday'])) {
+                        // Ambil format "1 Muharam 1448" dan pisahkan bulannya jika perlu, atau gunakan hijri_numeric + month text
+                        $hijriText = $day['hijri_numeric'] . ' ' . trim(preg_replace('/\s\d{4}\sH$/', '', $month['month']));
+                        $gregParts = explode(' ', $day['gregorian']);
+                        $gregText = isset($gregParts[0]) && isset($gregParts[1]) ? $gregParts[0] . ' ' . $gregParts[1] : $day['gregorian'];
+                        
+                        $eventsHtml .= '
+                        <div class="event-card">
+                            <div class="event-date">' . htmlspecialchars($hijriText) . ' / ' . htmlspecialchars($gregText) . '</div>
+                            <div class="event-name">' . htmlspecialchars($day['holiday']) . '</div>
+                        </div>';
+                    }
+                }
             ?>
-                <div class="month-card">
-                    <div class="month-header">
-                        <div class="month-title"><?php echo htmlspecialchars($month['month']); ?></div>
-                        <div class="month-period"><?php echo htmlspecialchars($month['period']); ?></div>
-                    </div>
-                    
-                    <div class="days-header">
-                        <?php foreach($t['days'] as $d): ?>
-                            <div><?php echo $d; ?></div>
-                        <?php endforeach; ?>
-                    </div>
-                    
-                    <div class="days-grid">
-                        <?php
-                        $firstDay = $month['days'][0] ?? null;
-                        $pad = 0;
-                        if ($firstDay) {
-                            $pad = getStartDayOfWeek($firstDay['gregorian'], $month['period']);
-                        }
-                        
-                        for ($i = 0; $i < $pad; $i++) {
-                            echo '<div class="day-cell empty"></div>';
-                        }
-                        
-                        foreach ($month['days'] as $day): 
-                            $isHoliday = !empty($day['holiday']);
-                            $cellClass = 'day-cell' . ($isHoliday ? ' holiday' : '');
-                        ?>
-                            <div class="<?php echo $cellClass; ?>" title="<?php echo $isHoliday ? htmlspecialchars($day['holiday']) : ''; ?>">
-                                <div class="hijri-date"><?php echo $day['hijri_numeric']; ?></div>
-                                <div class="gregorian-date"><?php echo htmlspecialchars($day['gregorian']); ?></div>
-                                <div class="pasaran"><?php echo htmlspecialchars($day['pasaran']); ?></div>
-                                <?php if ($isHoliday): ?>
-                                    <div class="holiday-badge" title="<?php echo htmlspecialchars($day['holiday']); ?>">•</div>
-                                <?php endif; ?>
+                <div class="month-wrapper">
+                    <div class="layout-grid">
+                        <div class="cal-main">
+                            <div class="month-header">
+                                <h2><?php echo htmlspecialchars($month['month']); ?></h2>
+                                <p><?php echo htmlspecialchars($month['period']); ?></p>
                             </div>
-                        <?php endforeach; ?>
+                            
+                            <div class="cal-days-header">
+                                <?php foreach($t['days'] as $d): ?>
+                                    <div><?php echo $d; ?></div>
+                                <?php endforeach; ?>
+                            </div>
+                            
+                            <div class="cal-grid">
+                                <?php
+                                $firstDay = $month['days'][0] ?? null;
+                                $pad = 0;
+                                if ($firstDay) {
+                                    $pad = getStartDayOfWeek($firstDay['gregorian'], $month['period']);
+                                }
+                                
+                                for ($i = 0; $i < $pad; $i++) {
+                                    echo '<div class="cal-cell empty"></div>';
+                                }
+                                
+                                foreach ($month['days'] as $index => $day): 
+                                    $isHoliday = !empty($day['holiday']);
+                                    
+                                    // Deteksi hari (0 = Ahad, 5 = Jumat)
+                                    $dayOfWeek = ($pad + $index) % 7;
+                                    $hijriColor = '#455a64';
+                                    if ($dayOfWeek === 0) $hijriColor = '#ef5350';
+                                    if ($dayOfWeek === 5) $hijriColor = '#66bb6a';
+
+                                    $gregParts = explode(' ', $day['gregorian']);
+                                    $gregText = isset($gregParts[0]) && isset($gregParts[1]) ? $gregParts[0] . ' ' . $gregParts[1] : $day['gregorian'];
+
+                                    $titleAttr = [];
+                                    if ($isHoliday) $titleAttr[] = 'Libur: ' . $day['holiday'];
+                                    if (!empty($day['pasaran'])) $titleAttr[] = 'Pasaran: ' . $day['pasaran'];
+                                    $titleStr = !empty($titleAttr) ? htmlspecialchars(implode(' | ', $titleAttr)) : '';
+                                ?>
+                                    <div class="cal-cell" title="<?php echo $titleStr; ?>">
+                                        <div class="cal-greg"><?php echo htmlspecialchars($gregText); ?></div>
+                                        <div class="cal-hijri" style="color: <?php echo $hijriColor; ?>;"><?php echo $day['hijri']; ?></div>
+                                        <div class="cal-pasaran"><?php echo htmlspecialchars($day['pasaran']); ?></div>
+                                        <?php if ($isHoliday): ?>
+                                            <div class="cal-dot"></div>
+                                        <?php else: ?>
+                                            <div style="height:5px"></div>
+                                        <?php endif; ?>
+                                    </div>
+                                <?php endforeach; ?>
+                            </div>
+                        </div>
+                        <div class="events-col">
+                            <h3>Hari Istimewa</h3>
+                            <div class="events-list">
+                                <?php echo !empty($eventsHtml) ? $eventsHtml : '<p style="color:#999; font-size:13px;">Tidak ada hari istimewa bulan ini.</p>'; ?>
+                            </div>
+                        </div>
                     </div>
                 </div>
             <?php endforeach; ?>
