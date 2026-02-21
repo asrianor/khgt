@@ -375,6 +375,7 @@ $widgetUrl = $protocol . "://" . $_SERVER['HTTP_HOST'] . dirname($_SERVER['REQUE
         <a href="#api-docs">API</a>
         <a href="#blogger">Blogger Widget</a>
         <a href="#wordpress">Wordpress Widget</a>
+        <a href="contoh_kalender.html" target="_blank">Contoh</a>
     </div>
 </nav>
 
